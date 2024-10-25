@@ -1,0 +1,132 @@
+redis:-
+
+installed it using redis stack, for visualizing on port 8001, and standard port 6379
+
+command for docker is 
+docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
+
+so, 
+can run redis terminal by visiting 8001
+
+now go inside the docker container using
+docker exec -it redis-stack /bin/bash
+
+ready to interact with redis server
+    redis-cli ping
+    PONG
+
+    redis-cli set name "nav"
+
+so now just do redis-cli
+now it will be connected to server
+with 
+```
+PS D:\redis>  docker exec -it redis-stack /bin/bash
+root@f6f0df08d15b:/# redis-cli ping
+PONG
+root@f6f0df08d15b:/# redis-cli set name nav
+OK
+root@f6f0df08d15b:/# redis-cli
+127.0.0.1:6379> set value navdeep
+OK
+127.0.0.1:6379> get valie
+(nil)
+127.0.0.1:6379> get value
+"navdeep"
+127.0.0.1:6379> set name navdeep
+OK
+127.0.0.1:6379> get name
+"navdeep"
+127.0.0.1:6379> 
+```
+
+these values can be seen on port 8001
+
+
+but not good way to store keys 
+<entity>:<id> value
+so,
+    set user:1 navdeep
+    set user:2 NAV
+    set user:3 navi
+
+```
+127.0.0.1:6379> set value navdeep
+OK
+127.0.0.1:6379> get valie
+(nil)
+127.0.0.1:6379> get value
+"navdeep"
+127.0.0.1:6379> set name navdeep
+OK
+127.0.0.1:6379> get name
+"navdeep"
+127.0.0.1:6379> set user:1 navi
+OK
+127.0.0.1:6379> set user:2 naviii
+OK
+127.0.0.1:6379> set user:3 100xnav
+OK
+127.0.0.1:6379>
+```
+
+so redis group keys on bases of : delimeter
+like user:1 (group is user)
+
+    127.0.0.1:6379> set user:3 100xnav
+    OK
+    127.0.0.1:6379>  set message:1 navdeep is cool
+    (error) ERR syntax error
+    127.0.0.1:6379>  set message:1 "navdeep is cool"
+    OK
+    127.0.0.1:6379>  set message:2 "navdeep is very cool"
+    OK
+    
+
+so another way is nx | xx
+nx - only set if key does not exist
+xx - only set if key exists
+
+example command
+set user:1 navdeep nx
+set message:1 "navdeep is cool" xx
+
+
+intially i set message 1 as navdeep is cool
+
+
+    127.0.0.1:6379> set message:1 "navdeep is cool" xx
+    OK
+    127.0.0.1:6379> set message:1 "navdeep is cool" xx
+    OK
+    127.0.0.1:6379> set message:1 "navdeep is cool" nx
+    (nil)
+
+another key is mget multiple get
+mget user:1 user:2 user:3
+
+    ```
+    127.0.0.1:6379> mget user:1 user:2 user:3
+    1) "navdeep"
+    2) "naviii"
+    3) "100xnav"
+```
+
+same is mset
+mset user:4 navdeep user:5 navdeep user:6 navdeep
+
+some basix commandf like incr to increase
+set count 0
+incr count
+
+can also do incrby
+incrby count 10
+
+
+single string  can be of 512 mb enought though
+so done with nodejs implementation
+
+now we can set expiry on keys
+set name navdeep ex 10
+ttl name
+like client.expire("msg:6", 10)
