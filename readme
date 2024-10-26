@@ -130,3 +130,38 @@ now we can set expiry on keys
 set name navdeep ex 10
 ttl name
 like client.expire("msg:6", 10)
+
+
+Now list 
+        list is array 
+        command  are like lpush
+        lpush message:1 navdeep
+        lpush message:1 naviii
+        lpush message:1 navi
+        lpush message:1 singh
+
+mget all message:1 
+        lrange message:1 0 -1
+
+lpush
+lpop
+rpush
+rpop
+lrange
+llen
+lindex
+ltrim
+
+
+now we have blocking commands
+    blpop
+    brpop
+    brpoplpush
+    blpop message:1 0
+
+    blpop means pop from left in blocking mode, means pop and if not avaibable 
+            to pop then wait for some time like
+            
+            blpop message:1 10
+
+            agar en 10 sec mei kuch innsert hua to done vo ajayga
